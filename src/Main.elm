@@ -456,18 +456,7 @@ cardinalButton { keyMode } orientation =
 subscriptions : Model -> Sub Msg
 subscriptions { movement } =
     Sub.batch
-        [ onKeyUp
-            (Decode.map
-                (\string ->
-                    case string of
-                        " " ->
-                            ToggleKeyMode
-
-                        _ ->
-                            Interrupt
-                )
-                (Decode.field "key" Decode.string)
-            )
+        [ onKeyUp (Decode.succeed Interrupt)
         , case movement of
             Idle ->
                 onKeyDown keyDecoder
@@ -493,6 +482,9 @@ keyDecoder =
 
                 "ArrowDown" ->
                     GotInput Down
+
+                " " ->
+                    ToggleKeyMode
 
                 _ ->
                     Interrupt

@@ -5209,20 +5209,20 @@ var $author$project$Main$GotFrame = function (a) {
 	return {$: 1, a: a};
 };
 var $author$project$Main$Interrupt = {$: 3};
-var $author$project$Main$ToggleKeyMode = {$: 2};
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Basics$composeL = F3(
 	function (g, f, x) {
 		return g(
 			f(x));
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
 var $author$project$Main$GotInput = function (a) {
 	return {$: 0, a: a};
 };
 var $author$project$Main$Left = 0;
 var $author$project$Main$Right = 1;
+var $author$project$Main$ToggleKeyMode = {$: 2};
 var $author$project$Main$Up = 2;
+var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$string = _Json_decodeString;
 var $author$project$Main$keyDecoder = A2(
 	$elm$json$Json$Decode$map,
@@ -5236,6 +5236,8 @@ var $author$project$Main$keyDecoder = A2(
 				return $author$project$Main$GotInput(2);
 			case 'ArrowDown':
 				return $author$project$Main$GotInput(3);
+			case ' ':
+				return $author$project$Main$ToggleKeyMode;
 			default:
 				return $author$project$Main$Interrupt;
 		}
@@ -5778,16 +5780,7 @@ var $author$project$Main$subscriptions = function (_v0) {
 		_List_fromArray(
 			[
 				$elm$browser$Browser$Events$onKeyUp(
-				A2(
-					$elm$json$Json$Decode$map,
-					function (string) {
-						if (string === ' ') {
-							return $author$project$Main$ToggleKeyMode;
-						} else {
-							return $author$project$Main$Interrupt;
-						}
-					},
-					A2($elm$json$Json$Decode$field, 'key', $elm$json$Json$Decode$string))),
+				$elm$json$Json$Decode$succeed($author$project$Main$Interrupt)),
 				function () {
 				if (!movement.$) {
 					return $elm$browser$Browser$Events$onKeyDown($author$project$Main$keyDecoder);
