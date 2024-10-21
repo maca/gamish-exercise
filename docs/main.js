@@ -5807,9 +5807,9 @@ var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
 var $author$project$Main$move = F3(
-	function (orientation, action, position) {
+	function (orientation, direction, position) {
 		var amount = function () {
-			if (!action) {
+			if (!direction) {
 				return 1;
 			} else {
 				return -1;
@@ -5848,18 +5848,18 @@ var $author$project$Main$StartMoving = function (a) {
 	return {$: 2, a: a};
 };
 var $author$project$Main$startMoving = F2(
-	function (model, action) {
+	function (model, direction) {
 		var _v0 = model.i;
 		switch (_v0.$) {
 			case 0:
-				return $author$project$Main$StartMoving(action);
+				return $author$project$Main$StartMoving(direction);
 			case 1:
-				return $author$project$Main$StartMoving(action);
+				return $author$project$Main$StartMoving(direction);
 			case 2:
-				return $author$project$Main$StartMoving(action);
+				return $author$project$Main$StartMoving(direction);
 			default:
 				var time = _v0.b;
-				return A2($author$project$Main$Moving, action, time);
+				return A2($author$project$Main$Moving, direction, time);
 		}
 	});
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
@@ -6065,18 +6065,18 @@ var $author$project$Main$update = F2(
 							case 1:
 								return model;
 							case 2:
-								var action = _v2.a;
+								var direction = _v2.a;
 								return _Utils_update(
 									model,
 									{
 										i: A2(
 											$author$project$Main$Moving,
-											action,
+											direction,
 											_Utils_Tuple2(time, time)),
-										s: A3($author$project$Main$move, model.p, action, position)
+										s: A3($author$project$Main$move, model.p, direction, position)
 									});
 							default:
-								var action = _v2.a;
+								var direction = _v2.a;
 								var _v3 = _v2.b;
 								var start = _v3.a;
 								return _Utils_update(
@@ -6084,9 +6084,9 @@ var $author$project$Main$update = F2(
 									{
 										i: A2(
 											$author$project$Main$Moving,
-											action,
+											direction,
 											_Utils_Tuple2(start, time)),
-										s: ((time - start) > 300) ? A3($author$project$Main$move, model.p, action, model.s) : model.s
+										s: ((time - start) > 300) ? A3($author$project$Main$move, model.p, direction, model.s) : model.s
 									});
 						}
 					}(),

@@ -20,7 +20,7 @@ main =
         }
 
 
-type Action
+type Direction
     = Forward
     | Backward
 
@@ -28,8 +28,8 @@ type Action
 type Movement
     = Idle
     | Rotating
-    | StartMoving Action
-    | Moving Action ( Int, Int )
+    | StartMoving Direction
+    | Moving Direction ( Int, Int )
 
 
 type KeyMode
@@ -96,18 +96,18 @@ update msg ({ position } as model) =
                 Rotating ->
                     model
 
-                StartMoving action ->
+                StartMoving direction ->
                     { model
-                        | movement = Moving action ( time, time )
-                        , position = move model.facing action position
+                        | movement = Moving direction ( time, time )
+                        , position = move model.facing direction position
                     }
 
-                Moving action ( start, _ ) ->
+                Moving direction ( start, _ ) ->
                     { model
-                        | movement = Moving action ( start, time )
+                        | movement = Moving direction ( start, time )
                         , position =
                             if (time - start) > 300 then
-                                move model.facing action model.position
+                                move model.facing direction model.position
 
                             else
                                 model.position
@@ -134,27 +134,27 @@ update msg ({ position } as model) =
             )
 
 
-startMoving : Model -> Action -> Movement
-startMoving model action =
+startMoving : Model -> Direction -> Movement
+startMoving model direction =
     case model.movement of
         Idle ->
-            StartMoving action
+            StartMoving direction
 
         Rotating ->
-            StartMoving action
+            StartMoving direction
 
         StartMoving _ ->
-            StartMoving action
+            StartMoving direction
 
         Moving _ time ->
-            Moving action time
+            Moving direction time
 
 
-move : Orientation -> Action -> { x : Int, y : Int } -> { x : Int, y : Int }
-move orientation action position =
+move : Orientation -> Direction -> { x : Int, y : Int } -> { x : Int, y : Int }
+move orientation direction position =
     let
         amount =
-            case action of
+            case direction of
                 Forward ->
                     1
 
