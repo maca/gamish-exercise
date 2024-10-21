@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot</title>
+    <script src="build/main.js" defer></script>
+    <style>
+         @keyframes eyeBlink {
+            0%, 10% {
+                background-color: #3498db;
+            }
+            15% {
+                background-color: #333;
+            }
+            20%, 50%, 80% {
+                background-color: #3498db;
+            }
+            85% {
+                background-color: #333;
+            }
+            90%, 100% {
+                background-color: #3498db;
+            }
+        }
+
+        button {
+          padding: 5px 15px;
+          margin: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var app = Elm.Main.init({ node: document.getElementById("root") });
+        });
+    </script>
+</body>
+</html>
