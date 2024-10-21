@@ -4,7 +4,7 @@ import Array
 import Browser
 import Browser.Events exposing (onAnimationFrame, onKeyDown, onKeyUp)
 import Html exposing (Html)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick, onMouseDown, onMouseUp)
 import Json.Decode as Decode
 import Time
@@ -27,6 +27,7 @@ type Action
 
 type Movement
     = Idle
+    | Rotating
     | StartMoving Action
     | Moving Action ( Int, Int )
 
@@ -90,7 +91,10 @@ update msg ({ position } as model) =
         GotFrame time ->
             ( case model.movement of
                 Idle ->
-                    { model | movement = Idle }
+                    model
+
+                Rotating ->
+                    model
 
                 StartMoving action ->
                     { model
@@ -134,6 +138,9 @@ startMoving : Model -> Action -> Movement
 startMoving model action =
     case model.movement of
         Idle ->
+            StartMoving action
+
+        Rotating ->
             StartMoving action
 
         StartMoving _ ->
@@ -197,6 +204,7 @@ rotateOrMove orientation model =
                                 0
                         )
                         model.facing
+                , movement = Rotating
             }
 
 
@@ -248,34 +256,36 @@ view model =
             ]
         , Html.div
             [ style "position" "absolute"
-            , style "bottom" "0"
-            , style "right" "0"
+            , style "bottom" "15px"
+            , style "right" "15px"
+            , style "display" "flex"
+            , style "flex-direction" "column"
             ]
             [ Html.div
                 [ style "display" "flex"
                 , style "align-items" "end"
                 ]
                 [ Html.div
-                    [ style "flex" "grow" ]
+                    [ style "flex-grow" "1" ]
                     [ cardinalButton model Left ]
                 , Html.div
                     [ style "display" "flex"
                     , style "flex-direction" "column"
-                    , style "flex" "grow"
+                    , style "flex-grow" "1"
                     ]
                     [ cardinalButton model Up
                     , cardinalButton model Down
                     ]
                 , Html.div
-                    [ style "flex" "grow" ]
+                    [ style "flex" "grow 1" ]
                     [ cardinalButton model Right ]
                 ]
             , Html.button
-                [ style "width" "100%"
+                [ style "flex-grow" "1"
                 , onClick ToggleKeyMode
                 ]
                 [ Html.text "\u{00A0}" ]
-            , Html.text "Keyboard works too"
+            , Html.div [ style "padding" "3px" ] [ Html.text "Keyboard works too" ]
             ]
         ]
 
@@ -341,15 +351,16 @@ robot { position, facing } =
                         , style "width" "20%"
                         , style "background-color" "#3498db"
                         , style "transition" "40ms ease-in-out"
+                        , style "position" "relative"
                         , case facing of
                             Up ->
                                 style "transform" "translateY(30%) rotate(-180deg)"
 
                             Right ->
-                                style "transform" "translateY(60%) rotate(90deg)"
+                                style "transform" "translateY(60%) rotate(-90deg)"
 
                             Left ->
-                                style "transform" "translateY(60%) rotate(-90deg)"
+                                style "transform" "translateY(60%) rotate(90deg)"
 
                             Down ->
                                 style "transform" "translateY(120%) rotate(180deg)"
@@ -360,9 +371,16 @@ robot { position, facing } =
                             , style "width" "8px"
                             , style "background-color" "black"
                             , style "margin" "auto"
-                            , style "margin-top" "2px"
-                            , style "position" "absoulte"
+                            , style "position" "absolute"
                             , style "top" "12px"
+                            , style "left" "3px"
+                            , style "transition" "30ms ease-in-out"
+                            , case facing of
+                                Down ->
+                                    style "top" "1px"
+
+                                _ ->
+                                    class ""
                             ]
                             []
                         ]
@@ -395,9 +413,19 @@ translatePixels val =
 cardinalButton : Model -> Orientation -> Html Msg
 cardinalButton { keyMode } orientation =
     Html.button
-        [ onMouseDown (GotInput orientation)
-        , onMouseUp Interrupt
-        ]
+        (onMouseDown (GotInput orientation)
+            :: onMouseUp Interrupt
+            :: (case ( keyMode, orientation ) of
+                    ( Rotate, Left ) ->
+                        [ style "font-size" "1.2em" ]
+
+                    ( Rotate, Right ) ->
+                        [ style "font-size" "1.2em" ]
+
+                    _ ->
+                        [ class "" ]
+               )
+        )
         [ Html.text
             (case ( keyMode, orientation ) of
                 ( Advance, Left ) ->
